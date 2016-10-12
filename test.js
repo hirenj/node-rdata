@@ -35,6 +35,9 @@ const LATIN1_MASK  = (1<<2);
 const UTF8_MASK = (1<<3);
 const ASCII_MASK =  (1<<6);
 
+const IS_OBJECT_BIT_MASK = (1 << 8);
+const HAS_ATTR_BIT_MASK = (1 << 9);
+const HAS_TAG_BIT_MASK = (1 << 10);
 
 let packed_version = function(v, p, s) {
   return s + (p * 256) + (v * 65536);
@@ -43,7 +46,6 @@ let packed_version = function(v, p, s) {
 let encode_int = function(value) {
   let buf = new Buffer(4);
   buf.writeInt32BE(value);
-  console.log(buf);
   return buf;
 };
 
@@ -61,7 +63,7 @@ let encode_flags = function(type,is_object,has_attributes,has_tag) {
   return flags;
 }
 
-const dataframe = { "cola" : [1,2,3], "colb" : ["a","b","c"]};
+const dataframe = { "x" : [2,4,8,16,32], "y" : ["aa","aa","aa","aa","aa"]};
 
 
 let writer = fs.createWriteStream('test.Rda')
@@ -73,7 +75,8 @@ writer.write(encode_int(2));
 console.log("Here");
 writer.write(encode_int(packed_version(3,0,0)));
 writer.write(encode_int(packed_version(2,3,0)));
-
+console.log("Version string is ",packed_version(2,3,0));
+console.log("Vector string is ",encode_flags(VECSXP,false,true,false));
 // Write data frame
 
 // Write the list container first
@@ -81,16 +84,16 @@ writer.write(encode_int(encode_flags(VECSXP,false,true,false)));
 writer.write(encode_int(Object.keys(dataframe).length));
 
 writer.write(encode_int(encode_flags(INTSXP,false,false,false)));
-writer.write(encode_int(dataframe["cola"].length));
-dataframe["cola"].forEach(function(el) {
+writer.write(encode_int(dataframe["x"].length));
+dataframe["x"].forEach(function(el) {
   writer.write(encode_int(el));
 });
 
 writer.write(encode_int(encode_flags(STRSXP,false,false,false)));
-writer.write(encode_int(dataframe["colb"].length));
-dataframe["colb"].forEach(function(el) {
-  writer.write(encode_int(SexpType.CHARSXP | (UTF8_MASK << 12) ));
-  let bytes = Buffer.from(el, 'utf8');
+writer.write(encode_int(dataframe["y"].length));
+dataframe["y"].forEach(function(el) {
+  writer.write(encode_int(CHARSXP | (UTF8_MASK << 12) ));
+  let bytes = new Buffer(el,'utf8');
   writer.write(encode_int(bytes.length));
   writer.write(bytes);
 });
