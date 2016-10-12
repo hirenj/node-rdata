@@ -1,5 +1,11 @@
 "use strict";
 
+const Validator = require('jsonschema').Validator;
+
+const validate = function(instance,schema) {
+  return (new Validator()).validate(instance,schema);
+};
+
 const fs = require('fs');
 
 

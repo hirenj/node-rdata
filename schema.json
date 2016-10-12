@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "id" : "http://glycocode.com/schemas/ms-checker_manifest.1.json",
+  "type": "object",
+  "required" : ["peptide_start","peptide_end","acc"],
+  "properties": {
+    "peptide_start" : { "$ref": "#/definitions/integer" },
+    "peptide_end" : { "$ref": "#/definitions/integer" },
+    "rt" : { "$ref" : "#/definitions/float" },
+    "acc" : { "type": "string"    }
+  },
+  "definitions" : {
+    "integer" : {
+      "type" : "integer"
+    },
+    "float" : {
+      "type" : "number"
+    }
+  }
+}
