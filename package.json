@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/hirenj/node-rdata",
   "dependencies": {
+    "async": "^2.1.1",
     "jsonschema": "^1.1.0"
   }
 }
