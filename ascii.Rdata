@@ -1,3 +1,4 @@
+### frame = data.frame('x'=c(2,4,8,16,32),y=c('AA','AA','AA','AA','AA'))
 RDA2
 A
 2
