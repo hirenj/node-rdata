@@ -24,7 +24,7 @@ obj_writer.dataFrame(dataframe,["x","y","z"],["real","string","logical"]);
 setTimeout(function() {
 
 obj_writer.stream.end();
-
+console.log("Putting streams together");
 var gz = zlib.createGzip();
 
 let writer = gz;
