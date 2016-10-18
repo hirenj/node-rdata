@@ -7,23 +7,29 @@ const validate = function(instance,schema) {
 };
 
 const fs = require('fs');
+const zlib = require('zlib');
 
 const Writer = require('./lib/object_writer');
 
-const dataframe = { "x" : [2,4,8,16,32], "y" : ["ab","ac","ad","ae","af"]};
+const dataframe = { "x" : [2,4,8,16,32], "y" : ["ab","ac","ad","ae","af"], "z" : [false,false,true,true,true]};
 
 let obj_writer = null;
 
-// let framewriter = fs.createWriteStream('frame.Rda');
+let framewriter = fs.createWriteStream('frame.Rda');
 
-// let obj_writer = new Writer(framewriter);
+obj_writer = new Writer(framewriter);
 
-// obj_writer.dataFrame(dataframe,["x","y"],["real","string"]);
+obj_writer.dataFrame(dataframe,["x","y","z"],["real","string","logical"]);
+
 setTimeout(function() {
 
-// obj_writer.stream.end();
+obj_writer.stream.end();
 
-let writer = fs.createWriteStream('test.Rda');
+var gz = zlib.createGzip();
+
+let writer = gz;
+
+gz.pipe(fs.createWriteStream('test.Rdata'));
 
 let written_frame = fs.createReadStream('frame.Rda');
 let written_frame2 = fs.createReadStream('frame.Rda');
