@@ -33,7 +33,13 @@ util.inherits(ObjectStream, Readable);
 
 ObjectStream.prototype._read = function read() {
   var self = this;
-  console.log(objects);
+  if (! this.counter || this.counter < 1e04) {
+    self.push(objects[0]);
+    this.counter = this.counter || 0;
+    this.counter += 1;
+    console.log(this.counter);
+    return;
+  }
   if (objects.length > 0) {
     self.push(objects.shift());
   } else {
@@ -46,7 +52,7 @@ let obj_writer = new Writer(writer);
 obj_writer.writeHeader();
 obj_writer.listPairs( {"frame" : new ObjectStream()},
                       ["frame"],
-                      [{ "type": "dataframe", "length" : 5, "keys": ["x", "y","z"], "types" : ["int", "string", "logical"] }]
+                      [{ "type": "dataframe", "length" : 1e04+5, "keys": ["x", "y","z"], "types" : ["real", "string", "logical"] }]
                       ).then( () => { console.log("Wrote frame data"); obj_writer.stream.end(); });
 
 
