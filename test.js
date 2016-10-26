@@ -19,25 +19,26 @@ let framewriter = fs.createWriteStream('frame.Rda');
 
 obj_writer = new Writer(framewriter);
 
-obj_writer.dataFrame(dataframe,["x","y","z"],["real","string","logical"]).then(function() {
+obj_writer.dataFrame(dataframe,["x","y","z"],["int","string","logical"]).then(function() {
   obj_writer.stream.end();
+  obj_writer.stream.on('finish',function() {
+    console.log("Putting streams together");
+    var gz = zlib.createGzip();
 
-  console.log("Putting streams together");
-  var gz = zlib.createGzip();
+    let writer = gz;
 
-  let writer = gz;
+    gz.pipe(fs.createWriteStream('test.Rdata'));
 
-  gz.pipe(fs.createWriteStream('test.Rdata'));
+    let written_frame = fs.createReadStream('frame.Rda');
+    let written_frame2 = fs.createReadStream('frame.Rda');
 
-  let written_frame = fs.createReadStream('frame.Rda');
-  let written_frame2 = fs.createReadStream('frame.Rda');
+    obj_writer = new Writer(writer);
 
-  obj_writer = new Writer(writer);
-
-  obj_writer.writeHeader();
-  obj_writer.listPairs( {"frame" : written_frame, "frame2" : written_frame2 },
-                        ["frame", "frame2"],
-                        []).then( () => obj_writer.stream.end() );
+    obj_writer.writeHeader();
+    obj_writer.listPairs( {"frame" : written_frame, "frame2" : written_frame2 },
+                          ["frame", "frame2"],
+                          []).then( () => obj_writer.stream.end() );
+  });
 
 });
 
