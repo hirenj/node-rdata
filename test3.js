@@ -26,14 +26,17 @@ function ObjectStream(max,increment,options) {
   if (! (this instanceof ObjectStream)) return new ObjectStream(options);
   if (! options) options = {};
   options.objectMode = true;
+  this.counter = 0;
   Readable.call(this, options);
 }
 
 util.inherits(ObjectStream, Readable);
 
+let total = 1e03;
+
 ObjectStream.prototype._read = function read() {
   var self = this;
-  if (! this.counter || this.counter < 1e04) {
+  if (typeof this.counter == 'undefined' || this.counter < total) {
     self.push(objects[0]);
     this.counter = this.counter || 0;
     this.counter += 1;
@@ -52,7 +55,7 @@ let obj_writer = new Writer(writer);
 obj_writer.writeHeader();
 obj_writer.listPairs( {"frame" : new ObjectStream()},
                       ["frame"],
-                      [{ "type": "dataframe", "length" : 1e04+5, "keys": ["x", "y","z"], "types" : ["real", "string", "logical"] }]
+                      [{ "type": "dataframe", "length" : total < 0 ? 5 : total+5, "keys": ["x", "y","z"], "types" : ["int", "string", "logical"] }]
                       ).then( () => { console.log("Wrote frame data"); obj_writer.stream.end(); });
 
 
