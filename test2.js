@@ -54,12 +54,12 @@ const vec_length = 1e05;
 let intstream = new IntStream(vec_length);
 let intstream2 = new IntStream(2*vec_length,2);
 
-let promise_1  = obj_writer.writeValue(intstream,"real").then(function() {
+let promise_1  = obj_writer.realVector(intstream).then(function() {
   console.log("Done writing int vector");
   obj_writer.stream.end();
 }).then( () => stream_done_promise(intwriter1));
 
-let promise_2 = obj_writer2.writeValue(intstream2,"real").then(function() {
+let promise_2 = obj_writer2.realVector(intstream2).then(function() {
   console.log("Done writing second int vector");
   obj_writer2.stream.end();
 }).then( () => stream_done_promise(intwriter2));
