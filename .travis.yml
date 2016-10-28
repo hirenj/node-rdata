@@ -1,0 +1,6 @@
+language: r
+sudo: false
+warnings_are_errors: false
+node_js: "4"
+install: "npm install"
+script: "npm test"
