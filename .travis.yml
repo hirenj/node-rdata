@@ -1,6 +1,11 @@
 language: r
 sudo: false
 warnings_are_errors: false
-node_js: "4"
+env:
+  - NODE_VERSION="4"
+
+before_install:
+  - nvm install $NODE_VERSION
+
 install: "npm install"
 script: "npm test"
