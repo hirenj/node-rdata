@@ -1,6 +1,6 @@
 "use strict";
 
-const ObjectWriter = require('../index');
+const ObjectWriter = require('../index.js');
 const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
