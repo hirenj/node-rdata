@@ -6,7 +6,7 @@ const expect = chai.expect;
 const assert = chai.assert;
 const tempfile = require('temp');
 
-// tempfile.track();
+tempfile.track();
 
 const run_rscript = function(file,command) {
   var exec = require('child_process').exec;
