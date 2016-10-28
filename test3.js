@@ -32,7 +32,7 @@ function ObjectStream(max,increment,options) {
 
 util.inherits(ObjectStream, Readable);
 
-let total = 1e07;
+let total = 1e05;
 
 ObjectStream.prototype._read = function read() {
   var self = this;
@@ -55,7 +55,7 @@ let obj_writer = new Writer(writer);
 obj_writer.writeHeader();
 obj_writer.listPairs( {"frame" : new ObjectStream()},
                       ["frame"],
-                      [{ "type": "dataframe", "length" : total < 0 ? 5 : total+5, "keys": ["x", "y","z"], "types" : ["real", "string", "logical"] }]
+                      [{ "type": "dataframe", "keys": ["x", "y","z"], "types" : ["real", "string", "logical"] }]
                       ).then( () => { console.log("Wrote frame data"); obj_writer.stream.end(); });
 
 
