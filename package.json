@@ -2,7 +2,7 @@
   "name": "node-rdata",
   "version": "0.0.1",
   "description": "",
-  "main": "test.js",
+  "main": "index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
     "lint": "./node_modules/jshint/bin/jshint lib/*.js",
