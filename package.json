@@ -4,7 +4,9 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha",
+    "lint": "./node_modules/jshint/bin/jshint lib/*.js",
+    "validate" : "npm ls"
   },
   "repository": {
     "type": "git",
@@ -16,9 +18,19 @@
     "url": "https://github.com/hirenj/node-rdata/issues"
   },
   "homepage": "https://github.com/hirenj/node-rdata",
+  "devDependencies" : {
+    "jshint": "^2.9.2",
+    "precommit-hook": "^3.0.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  },
   "dependencies": {
     "async": "^2.1.1",
     "jsonschema": "^1.1.0",
     "temp": "^0.8.3"
-  }
+  },
+  "pre-commit" : [
+    "lint",
+    "validate"
+  ]
 }
