@@ -82,7 +82,7 @@ describe('Pregenerating columns', function() {
 
     Promise.all([promise_1,promise_2]).then(function() {
       console.log("Putting streams together");
-      var gz = zlib.createGzip();
+      let gz = zlib.createGzip();
 
       let writer = gz;
 
