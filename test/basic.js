@@ -1,6 +1,5 @@
 "use strict";
-console.log(require('path').resolve(__dirname, '../lib/object_writer'));
-const ObjectWriter = require('../lib/object_writer');
+const ObjectWriter = require('..');
 const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
