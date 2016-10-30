@@ -47,6 +47,7 @@ function IntStream(max,increment,options) {
   this.count = 1;
   this.max = max || 10;
   this.increment = increment || 1;
+  this.total = Math.floor(this.max / this.increment);
   Readable.call(this, options);
 }
 
@@ -70,7 +71,7 @@ describe('Pregenerating columns', function() {
     let obj_writer = new ObjectWriter(tempfile.createWriteStream());
     let obj_writer2 = new ObjectWriter(tempfile.createWriteStream());
 
-    const vec_length = 5e05;
+    const vec_length = 5e04;
     let promise_1  = obj_writer.realVector(new IntStream(vec_length))
                                .then( () => console.log("Wrote stream 1"))
                                .then( () => obj_writer.finish() )
@@ -96,7 +97,7 @@ describe('Pregenerating columns', function() {
       obj_writer.writeHeader();
       return obj_writer.listPairs( {"frame" : {"cola" : written_vector, "colb" : written_vector2 }},
                         ["frame"],
-                        [{ "type": "dataframe", "length" : vec_length, "keys": ["cola", "colb"], "types" : ["real","real"] }]
+                        [{ "type": "dataframe", "keys": ["cola", "colb"], "types" : ["real","real"] }]
                         ).then( () => obj_writer.finish() )
                         .then( () => file_stream.path );
     })

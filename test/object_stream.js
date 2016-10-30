@@ -74,7 +74,7 @@ ObjectStream.prototype._read = function read() {
 describe('Writing a stream', function() {
   it('Writes data out from an object stream',function(done){
     this.timeout(20000);
-    let vec_length = 5e05;
+    let vec_length = 5e04;
     let gz = zlib.createGzip();
 
     let writer = gz;
