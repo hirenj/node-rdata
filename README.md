@@ -3,7 +3,7 @@
 Enable writing of JavaScript objects to R data frames
 
 ## Usage
-```
+```js
 const RData = require('node-rdata');
 let output = require('fs').createWriteStream('output.Rdata');
 
@@ -28,7 +28,7 @@ writer.environment( {'data' : data, 'realvector' : realvector },{'data' : typein
 ```
 
 ### Stream usage
-```
+```js
 let data_stream = ...get a stream of objects from somewhere...
 
 // data_stream is an object_mode stream, emitting simple
