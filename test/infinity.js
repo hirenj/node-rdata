@@ -29,23 +29,29 @@ const na_index = function(file,variable,column) {
   return run_rscript(file,'which(is.na('+variable+'$'+column+'))').then( (val) => { return val.replace('\n','').split(/\s+/).filter( (idx) => idx !== '' ).map( (idx) => parseInt(idx)); } );
 }
 
-const dataframe = { 'x' : [2,4,null,8,16,32], 'y' : ['ab','ac','ad',null,'ae','af'], 'z' : [false,false,true,true,null,true]};
+const infinite_index = function(file,variable,column) {
+  return run_rscript(file,'which(is.infinite('+variable+'$'+column+'))').then( (val) => { return val.replace('\n','').split(/\s+/).filter( (idx) => idx !== '' ).map( (idx) => parseInt(idx)); });
+}
 
-describe('Writing NA values', function() {
-  it('Writes a data frame',function(done){
+
+
+const dataframe = { 'x' : [2,4,8,-Infinity,Infinity], 'y' : ['ab','ac','ad','ae','af'], 'z' : [2,4,8,-Infinity,Infinity]};
+
+describe('Writing Infinite values', function() {
+  it('Correctly writes infinite values',function(done){
     let writer = new ObjectWriter(tempfile.createWriteStream());
     let path = writer.stream.path;
     writer.writeHeader();
-    writer.listPairs( {'frame' : dataframe },['frame'],[ { 'type': 'dataframe', 'keys' : ['x','y','z'], 'types' : ['int','string','logical'] }])
+    writer.listPairs( {'frame' : dataframe },['frame'],[ { 'type': 'dataframe', 'keys' : ['x','y','z'], 'types' : ['int','string','real'] }])
     .then(() => writer.finish() )
     .then( () => row_count(path,'frame') )
-    .then( (count) => { expect(count).equals(6); })
+    .then( (count) => { expect(count).equals(5); })
     .then( () => na_index(path,'frame','x') )
-    .then( (indices) => { expect(indices).eql([3]); })
-    .then( () => na_index(path,'frame','y') )
-    .then( (indices) => { expect(indices).eql([4]); })
+    .then( (indices) => { expect(indices).eql([4,5]); })
     .then( () => na_index(path,'frame','z') )
-    .then( (indices) => { expect(indices).eql([5]); })
+    .then( (indices) => { expect(indices).eql([]); })
+    .then( () => infinite_index(path,'frame','z') )
+    .then( (indices) => { expect(indices).eql([4,5]); })
 
     .then( () => done() )
     .catch( done );
