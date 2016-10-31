@@ -25,10 +25,15 @@ const row_count = function(file,variable) {
   return run_rscript(file,'nrow('+variable+')').then( (val) => parseInt(val) );
 }
 
-const dataframe = { 'x' : [2,4,8,16,32], 'y' : ['ab','ac','ad','ae','af'], 'z' : [false,false,true,true,true]};
-const dataframe2 = { 'x' : [2,4,8], 'y' : ['ab','ac','ad'], 'z' : [false,false,true]};
+const na_index = function(file,variable,column) {
+  return run_rscript(file,'which(is.na('+variable+'$'+column+'))').then( (val) => val.split('\s+').map( (idx) => parseInt(idx)) );
+}
 
-describe('Basic writing', function() {
+
+
+const dataframe = { 'x' : [2,4,null,8,16,32], 'y' : ['ab','ac','ad',null,'ae','af'], 'z' : [false,false,true,true,null,true]};
+
+describe('Writing NA values', function() {
   it('Writes a data frame',function(done){
     let writer = new ObjectWriter(tempfile.createWriteStream());
     let path = writer.stream.path;
@@ -36,27 +41,14 @@ describe('Basic writing', function() {
     writer.listPairs( {'frame' : dataframe },['frame'],[ { 'type': 'dataframe', 'keys' : ['x','y','z'], 'types' : ['int','string','logical'] }])
     .then(() => writer.finish() )
     .then( () => row_count(path,'frame') )
-    .then( (count) => { expect(count).equals(5); })
-    .then( () => done() )
-    .catch( done );
-  });
-});
+    .then( (count) => { expect(count).equals(6); })
+    .then( () => na_index(path,'frame','x') )
+    .then( (indices) => { expect(indices).eql([3]); })
+    .then( () => na_index(path,'frame','y') )
+    .then( (indices) => { expect(indices).eql([4]); })
+    .then( () => na_index(path,'frame','z') )
+    .then( (indices) => { expect(indices).eql([5]); })
 
-describe('Multiple variables in an environment', function() {
-  it('Writes two data frames',function(done){
-    let writer = new ObjectWriter(tempfile.createWriteStream());
-    let path = writer.stream.path;
-    writer.writeHeader();
-    writer.listPairs( {'frame' : dataframe, 'frame2' : dataframe2 },
-                      ['frame', 'frame2'],
-                      [ { 'type': 'dataframe', 'keys' : ['x','y','z'], 'types' : ['int','string','logical'] },
-                        { 'type': 'dataframe', 'keys' : ['x','y','z'], 'types' : ['int','string','logical'] }
-                      ])
-    .then(() => writer.finish() )
-    .then( () => row_count(path,'frame') )
-    .then( (count) => { expect(count).equals(5); })
-    .then( () => row_count(path,'frame2') )
-    .then( (count) => { expect(count).equals(3); })
     .then( () => done() )
     .catch( done );
   });
