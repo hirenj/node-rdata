@@ -1,5 +1,5 @@
 {
-  "name": "node-rdata",
+  "name": "rdata",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "async": "^2.1.1",
-    "jsonschema": "^1.1.0",
     "temp": "^0.8.3"
   },
   "pre-commit" : [
