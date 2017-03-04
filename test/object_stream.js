@@ -112,4 +112,45 @@ describe('Writing a stream', function() {
     .then( () => done() )
     .catch( done );
   });
+  it('Writes data out from an object stream including nulls',function(done){
+    objects.push({ "x" : null, "y" : null, "z": null});
+    this.timeout(20000);
+    let vec_length = 5e01;
+    let gz = zlib.createGzip();
+
+    let writer = gz;
+
+    let file_stream = gz.pipe(tempfile.createWriteStream());
+
+    let object_writer = new ObjectWriter(writer);
+    let path = object_writer.stream.path;
+    object_writer.writeHeader();
+    object_writer.listPairs( {"frame" : new ObjectStream(vec_length)},
+                          ["frame"],
+                          [{ "type": "dataframe", "keys": ["x", "y","z"], "types" : ["real", "string", "logical"] }]
+                          ).then( () => object_writer.finish() )
+                          .then( () => file_stream.path )
+    .then( (file) => {
+      return row_count(file,'frame')
+             .then( (count) => { expect(count).equals(vec_length+1); })
+             .then( () => file );
+    })
+    .then( (file) => {
+      return object_class(file,'frame$x')
+             .then( (clazz) => { expect(clazz).equals("numeric"); })
+             .then( () => file );
+    })
+    .then( (file) => {
+      return object_class(file,'frame$y')
+             .then( (clazz) => { expect(clazz).equals("character"); })
+             .then( () => file );
+    })
+    .then( (file) => {
+      return object_class(file,'frame$z')
+             .then( (clazz) => { expect(clazz).equals("logical"); })
+             .then( () => file );
+    })
+    .then( () => done() )
+    .catch( done );
+  });
 });
