@@ -38,6 +38,7 @@ const dataframe = { 'x' : [2,4,null,8,parseInt('x'),32], 'y' : ['ab','ac','ad',n
 
 describe('Writing NA values', function() {
   it('Writes a data frame',function(done){
+    this.timeout(5000);
     let writer = new ObjectWriter(tempfile.createWriteStream());
     let path = writer.stream.path;
     writer.writeHeader();
